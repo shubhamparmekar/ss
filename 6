@@ -1,0 +1,35 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
+
+# Load the dataset
+file_path = 'p-tennis.csv'  
+df = pd.read_csv(file_path)
+
+# Convert categorical data to numerical values
+df['Outlook'] = df['Outlook'].astype('category').cat.codes
+df['Temperature'] = df['Temperature'].astype('category').cat.codes
+df['Humidity'] = df['Humidity'].astype('category').cat.codes
+df['Wind'] = df['Wind'].astype('category').cat.codes
+df['PlayTennis'] = df['PlayTennis'].astype('category').cat.codes
+
+# Separate features and target variable
+X = df.drop('PlayTennis', axis=1)
+y = df['PlayTennis']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create a Naive Bayes classifier
+nb_classifier = GaussianNB()
+
+# Train the classifier
+nb_classifier.fit(X_train, y_train)
+
+# Make predictions on the test set
+y_pred = nb_classifier.predict(X_test)
+
+# Compute accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy * 100:.2f}%")
